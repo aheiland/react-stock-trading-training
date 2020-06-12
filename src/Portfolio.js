@@ -16,7 +16,7 @@ export default class Portfolio extends React.Component{
             let price = Number.parseFloat(this.props.getPrice(stock.symbol)).toFixed(2);
             return (
                     <div key={stock.symbol} className="firm">
-                        <div className="firm-head">
+                        <div className="firm-head--sell">
                             {stock.symbol}
                             <span className="firm-price">(Price: {price})</span>
                             <span className="firm-amount">(Available Amount: {stock.amount})</span>

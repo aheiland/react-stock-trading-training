@@ -107,6 +107,12 @@ section {
   background: #AFA;
   border-bottom: 1px solid #dcdcdc;
 }
+.firm-head--sell {
+  padding: 10px;
+  font-weight: bold;
+  background: #FAA;
+  border-bottom: 1px solid #dcdcdc;
+}
 
 .firm-price {
   font-size: .8em;

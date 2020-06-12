@@ -17,38 +17,59 @@ import './App.css';
 class App extends React.Component {
   constructor(props) {
     super(props);
+    const firms = [
+        new NPCAccount('BMW', 10000, 200),
+        new NPCAccount('Apple', 10000, 500),
+        new NPCAccount('Google', 100000, 500),
+        new NPCAccount('Twitter', 5000, 50)
+    ];
     this.state = {
-      account: new PlayerAccount('YOU', 1000),
-      firms: [
-          new NPCAccount('BMW', 10000, 200),
-          new NPCAccount('Apple', 10000, 500),
-          new NPCAccount('Google', 100000, 500),
-          new NPCAccount('Twitter', 5000, 50),
-      ],
-      ledger: new Ledger(),
+      history: [
+        {
+          account: new PlayerAccount('YOU', 1000),
+          firms: firms,
+          prices: this.calculatePrices(firms),
+          ledger: new Ledger([]),
+        }
+      ]
     };
   }
 
+  getCurrent() {
+    return this.state.history.slice(-1)[0];
+  }
+
+  calculatePrices(firms) {
+    if (this.state === undefined) {
+      return firms.map(firm => {
+        return {symbol: firm.symbol, price: firm.balance / firm.amount};
+      });
+    }
+    return firms.map(firm => {
+      return {symbol: firm.symbol, price: this.getFunds(firm) / this.getAmount(firm.symbol, firm)};
+    });
+  }
+
   getFunds(account) {
-    return this.state.ledger.transactions
+    return this.getCurrent().ledger.transactions
         .filter(transaction => transaction.symbol === account.symbol)
         .reduce((carry, current) => carry + current.getWorth(), account.balance);
   }
 
   getTransactionWorth(symbol, account) {
-    return this.state.ledger.transactions
+    return this.getCurrent().ledger.transactions
         .filter(transaction => transaction.what === symbol && transaction.symbol === account.symbol)
         .reduce((carry, current) => carry - current.getWorth(), 0);
   }
 
   getAmount(symbol, account) {
-    return this.state.ledger.transactions
+    return this.getCurrent().ledger.transactions
         .filter(transaction => transaction.symbol === account.symbol && transaction.what === symbol)
         .reduce((carry, current) => carry + current.getAmountDiff(), account.amount);
   }
 
   getWorth(account) {
-    return this.state.firms
+    return this.getCurrent().firms
         .filter(firm => firm.symbol !== account.symbol)
         .reduce(
             (carry, current) => carry + this.getTransactionWorth(current.symbol, account),
@@ -57,41 +78,21 @@ class App extends React.Component {
   }
 
   getStocks(account) {
-    return this.state.firms.map(firm => {
+    return this.getCurrent().firms.map(firm => {
       return {symbol: firm.symbol, amount: this.getAmount(firm.symbol, account)};
     }).filter(stock => stock.amount > 0);
   }
 
-  sumAmount(account) {
-    return this.state.firms
-        .filter(firm => firm.symbol !== account.symbol)
-        .reduce(
-            (carry, current) => carry + this.getAmount(current.symbol, new EmptyAccount()),
-            this.getAmount(account.symbol, account)
-        );
-  }
-
-  soldAmount(account) {
-    const sold = this.state.firms
-        .concat([this.state.account])
-        .filter(firm => firm.symbol !== account.symbol)
-        .reduce(
-            (carry, current) => carry + this.getAmount(account.symbol, new PlayerAccount(current.symbol, 0, 0)),
-            0
-        );
-    return sold;
-  }
-
   targetHasSufficentMoney(symbol, neededFunds) {
-    const target = this.state.firms
-        .concat([this.state.account])
+    const target = this.getCurrent().firms
+        .concat([this.getCurrent().account])
         .find(account => account.symbol === symbol);
     return this.getFunds(target) >= neededFunds;
   }
 
   sourceHasSufficentAmount(symbol, sourceSymbol, neededAmount, unsellable = 1) {
-    const source = this.state.firms
-        .concat([this.state.account])
+    const source = this.getCurrent().firms
+        .concat([this.getCurrent().account])
         .find(account => account.symbol === sourceSymbol);
     return this.getAmount(symbol, source) >= ((neededAmount * 1) + unsellable);
   }
@@ -123,7 +124,16 @@ class App extends React.Component {
       return;
     }
     const newTransactions = this.createBuyTransactions(fromSymbol, forSymbol, price, amount);
-    this.setState({ledger: new Ledger(this.state.ledger.transactions.concat(newTransactions))});
+    this.updateTransactions(newTransactions);
+  }
+
+  updateTransactions(newTransactions) {
+    const current = this.getCurrent();
+    const befor = this.state.history.slice(0, -1);
+    current.ledger = new Ledger(
+        this.getCurrent().ledger.transactions.concat(newTransactions));
+    const history = befor.concat([current]);
+    this.setState({history: history});
   }
 
   sell(source, target, price, amount) {
@@ -131,7 +141,7 @@ class App extends React.Component {
       return;
     }
     const newTransactions = this.createSellTransactions(source, target, price, amount);
-    this.setState({ledger: new Ledger(this.state.ledger.transactions.concat(newTransactions))});
+    this.updateTransactions(newTransactions);
   }
 
   firmBuysOther(firm, firms) {
@@ -161,7 +171,7 @@ class App extends React.Component {
   }
 
   advanceDay() {
-    const firms = this.state.firms.slice();
+    const firms = this.getCurrent().firms.slice();
     const firmsAction = firms.map(firm => { return {firm: firm, action: getRandomInt(5)}; });
     const actionResults = firmsAction.map(action => {
       switch (action.action) {
@@ -190,14 +200,18 @@ class App extends React.Component {
           return changes[0].change;
         });
 
-    this.setState({
-      ledger: new Ledger(this.state.ledger.transactions.concat(newTransactions)),
-      firms: newFirms,
+    this.setState({history: this.state.history.concat([{
+        account: this.getCurrent().account,
+        ledger: new Ledger(this.getCurrent().ledger.transactions.concat(newTransactions)),
+        firms: newFirms,
+        prices: this.calculatePrices(newFirms),
+      }])
     });
   }
 
   calculatePriceForAccountPice(account) {
-    return this.getWorth(account) / (this.sumAmount(account) + (2.0 * this.soldAmount(account)));
+    const price = this.getCurrent().prices.find(price => price.symbol === account.symbol).price;
+    return Math.sign(price) * price;
   }
 
   render () {
@@ -237,26 +251,26 @@ class App extends React.Component {
                   </ul>
                 </li>
                 <li>
-                  $ {Number.parseFloat(this.getFunds(this.state.account)).toFixed(2)}
+                  $ {Number.parseFloat(this.getFunds(this.getCurrent().account)).toFixed(2)}
                 </li>
               </ul>
             </nav>
             <Switch>
               <Route exact={true} path="/">
-                <StockTrader funds={this.getFunds(this.state.account)}/>
+                <StockTrader funds={this.getFunds(this.getCurrent().account)}/>
               </Route>
               <Route path="/portfolio">
                 <Portfolio
-                    stocks={this.getStocks(this.state.account)}
-                    onSell={(symbol, price, amount) => { this.sell(this.state.account.symbol, symbol, price, amount) }}
-                    getPrice={symbol => { return this.calculatePriceForAccountPice(this.state.firms.find(firm => firm.symbol === symbol));}}/>
+                    stocks={this.getStocks(this.getCurrent().account)}
+                    onSell={(symbol, price, amount) => { this.sell(this.getCurrent().account.symbol, symbol, price, amount) }}
+                    getPrice={symbol => { return this.calculatePriceForAccountPice(this.getCurrent().firms.find(firm => firm.symbol === symbol));}}/>
               </Route>
               <Route path="/trading">
                 <Trading
-                    firms={this.state.firms}
+                    firms={this.getCurrent().firms}
                     getAmount={account => this.getAmount(account.symbol, account)}
                     getPrice={account => this.calculatePriceForAccountPice(account)}
-                    onBuy={(symbol, price, amount) => { this.buy(symbol, this.state.account.symbol, price, amount) }}
+                    onBuy={(symbol, price, amount) => { this.buy(symbol, this.getCurrent().account.symbol, price, amount) }}
                 />
               </Route>
             </Switch>
