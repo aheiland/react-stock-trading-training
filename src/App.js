@@ -46,7 +46,7 @@ class App extends React.Component {
       });
     }
     return firms.map(firm => {
-      return {symbol: firm.symbol, price: this.getFunds(firm) / this.getAmount(firm.symbol, firm)};
+      return {symbol: firm.symbol, price: this.getFunds(firm) / Math.max(this.getAmount(firm.symbol, firm), 1)};
     });
   }
 

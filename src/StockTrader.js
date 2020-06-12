@@ -19,7 +19,7 @@ export default class StockTrader extends React.Component {
             const prevFirm = prev.firms.find(pFirm => pFirm.symbol === firm.symbol);
             return (
                     <g key={index + firm.symbol}>
-                        <line x1={(index * 10) - 10} y1={this.calculateValue(prevFirm, prev.prices) + 1000} x2={(index * 10)} y2={this.calculateValue(firm, current.prices) + 1000}
+                        <line x1={(index * 10) - 10} y1={this.calculateValue(prevFirm, prev.prices) + 900} x2={(index * 10)} y2={this.calculateValue(firm, current.prices) + 900}
                               style={{stroke: colors[ind], strokeWidth: "4"}}></line>
                     </g>
                 );
@@ -29,7 +29,7 @@ export default class StockTrader extends React.Component {
 
     renderHistory() {
         const colors = ['#FF0000', '#00FF00', '#00FFFF', '#FF00FF'];
-        return this.props.history.map((current, index, array) => (
+        return this.props.history.slice(-365).map((current, index, array) => (
             <g key={index}>
                 {this.renderCurrent(array[index - 1], current, index)}
                 </g>
@@ -42,7 +42,7 @@ export default class StockTrader extends React.Component {
         const colors = ['#FF0000', '#00FF00', '#00FFFF', '#FF00FF'];
         const current = this.props.history.slice(-1)[0];
         return current.firms.map((firm, index) => (
-            <text x={(this.props.history.length * 10)} y={this.calculateValue(firm, current.prices) + 1000} fill={colors[index]} fontSize={50}>{firm.symbol}</text>
+            <text x={(this.props.history.length * 10)} y={this.calculateValue(firm, current.prices) + 900} fill={colors[index]} fontSize={50}>{firm.symbol}</text>
         ));
     }
 

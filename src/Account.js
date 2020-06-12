@@ -17,12 +17,12 @@ export class NPCAccount extends Account{
         const dice = getRandomInt(1, 20);
         let balance = this.balance;
         if (dice === 1) {
-            balance = balance * 1.25;
+            balance = balance + Math.min(Math.max((balance * 1.25) - balance, -20), 20);
         } else if(dice === 20) {
-            balance = balance * 0.5;
+            balance = balance + Math.min(Math.max((balance * 0.5) - balance, -10), 10);
         } else {
-            const factor = (((dice - 2) / 17) * 0.2) + 0.9;
-            balance = balance * factor;
+            const factor = (((dice - 2) / 17) * 0.4) + 0.9;
+            balance = balance + Math.min(Math.max((balance * factor) - balance, -5), 5);
         }
         return new NPCAccount(this.symbol, balance, this.amount);
     }
