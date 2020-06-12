@@ -257,7 +257,7 @@ class App extends React.Component {
             </nav>
             <Switch>
               <Route exact={true} path="/">
-                <StockTrader funds={this.getFunds(this.getCurrent().account)}/>
+                <StockTrader funds={this.getFunds(this.getCurrent().account)} history={this.state.history}/>
               </Route>
               <Route path="/portfolio">
                 <Portfolio
