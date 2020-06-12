@@ -1,23 +1,23 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "04f5e0fe29590aa08c116cdf399afdd3",
+    "revision": "30798e5340e09373490033cacf3e360e",
     "url": "/react-stock-trading-training/index.html"
   },
   {
-    "revision": "17439394e8facf6a2fb1",
+    "revision": "852a3becebc1d8d5f2ec",
     "url": "/react-stock-trading-training/static/css/main.6b1538bd.chunk.css"
   },
   {
-    "revision": "ae37515daa1d9ec73aea",
-    "url": "/react-stock-trading-training/static/js/2.23c319a5.chunk.js"
+    "revision": "98bb809a7215f0c11e11",
+    "url": "/react-stock-trading-training/static/js/2.8fc4f71c.chunk.js"
   },
   {
     "revision": "c64c486544348f10a6d6c716950bc223",
-    "url": "/react-stock-trading-training/static/js/2.23c319a5.chunk.js.LICENSE.txt"
+    "url": "/react-stock-trading-training/static/js/2.8fc4f71c.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "17439394e8facf6a2fb1",
-    "url": "/react-stock-trading-training/static/js/main.f15d8b2e.chunk.js"
+    "revision": "852a3becebc1d8d5f2ec",
+    "url": "/react-stock-trading-training/static/js/main.ea7fc116.chunk.js"
   },
   {
     "revision": "39a27b360eb1c4536a20",

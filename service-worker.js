@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/react-stock-trading-training/precache-manifest.021dd96fb44af407329bd8fc63dd40c0.js"
+  "/react-stock-trading-training/precache-manifest.9c63a238d9c0cc644c62beddaf1bc6a2.js"
 );
 
 self.addEventListener('message', (event) => {
