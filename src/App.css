@@ -1,38 +1,122 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+nav {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  justify-content: space-between;
+  margin: 0 auto;
+  width: 80%;
+  border: 1px solid #CDCDCD;
+  border-radius: 3px;
+  background: #FAFAFA;
+  height: 50px;
 }
 
-.App-link {
-  color: #61dafb;
+.menu {
+  display: flex;
+  margin: 0;
+  flex: 0 0 33%;
+  justify-content: space-between;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.menu > li {
+  display: block;
+  color: #666666;
+  width: 100%;
+  text-align: center;
+  margin: auto;
+  position: relative;
+  height: 100%;
+  line-height: 50px;
+}
+
+.menu > li:hover {
+  color: #000000;
+}
+
+.menu > li > * {
+  color: inherit;
+  text-decoration: none;
+  display: block;
+  height: 100%;
+  width: 100%;
+  border: none;
+  background: inherit;
+  font: inherit;
+  line-height: 50px;
+}
+
+.menu > li > .active {
+  font-weight: bold;
+}
+
+.menu.menu--sub {
+  position: absolute;
+  padding: 0;
+}
+
+.menu.menu--sub::before {
+  content: '';
+  position: absolute;
+  top: -45%;
+  right: 15px;
+  height: 0px;
+  border: 5px solid transparent;
+  border-top: 8px solid #666;
+  width: 0px;
+  transform: translateY(-50%);
+}
+
+li:hover .menu.menu--sub::before {
+  transform: translateY(-100%) scaleY(-1);
+}
+
+.menu.menu--sub > li {
+  display: none;
+}
+
+li:hover .menu.menu--sub > li {
+  display: block;
+}
+
+.menu.menu--sub > li > * {
+  background-color: #FAFAFA;
+  border: 1px solid #CDCDCD;
+}
+
+section {
+  width: 80%;
+  margin: 10px auto;
+}
+
+.firm-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.firm {
+  flex: 0 1 45%;
+  border: 1px solid #dcdcdc;
+  border-radius: 3px;
+  background: #fafafa;
+  height: 100px;
+  margin-bottom: 40px;
+}
+
+.firm-head {
+  padding: 10px;
+  font-weight: bold;
+  background: #AFA;
+  border-bottom: 1px solid #dcdcdc;
+}
+
+.firm-price {
+  font-size: .8em;
+  font-weight: normal;
+  padding-left: 20px;
+}
+
+.firm-amount {
+  font-size: .8em;
+  font-weight: normal;
+  float: right;
+  transform: translateY(2px);
 }
